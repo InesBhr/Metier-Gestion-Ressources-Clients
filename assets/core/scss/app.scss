@@ -1,0 +1,70 @@
+
+ @import "~boosted/scss/boosted";
+ @import "~boosted/dist/css/orange-helvetica.css";
+ @import "~@fortawesome/fontawesome-free/css/all.min.css";
+ @import "vue-stripe-menu";
+ 
+ .sf-display-none {
+   display: contents !important;
+ }
+ 
+ $all-colors: map-merge-multiple($blues, $indigos, $purples, $pinks, $reds, $oranges, $yellows, $greens, $teals, $cyans);
+ $utilities: map-merge(
+                 $utilities,
+                 (
+                         "color": map-merge(
+                                         map-get($utilities, "color"),
+                                         (
+                                                 values: map-merge(
+                                                                 map-get(map-get($utilities, "color"), "values"),
+                                                                         (
+                                                                                 $all-colors
+                                                                         ),
+                                                 ),
+                                         ),
+                         ),
+                 )
+ );
+ 
+ @import "~boosted/scss/utilities/api";
+ 
+ .callout {
+   padding: 1.25rem;
+   margin-top: 1.25rem;
+   margin-bottom: 1.25rem;
+   background-color: #f6f6f6;
+   border-left: .625rem solid #f6f6f6;
+ }
+ 
+ .callout-info {
+   border-left-color: $functional-blue;
+ }
+ 
+ .callout-warning {
+   border-left-color: $functional-yellow;
+ }
+ 
+ .callout-danger {
+   border-left-color: $functional-red;
+ }
+ 
+ #navbarDarkDropdownMenuLink:hover{
+  color: #f16e00 !important;
+}
+ 
+ /*************************************************************/
+ /*                      vue-toastification
+ /*************************************************************/
+ $vt-color-success: var(--bs-success);
+ $vt-color-error: var(--bs-danger);
+ 
+ 
+ @import "~vue-toastification/src/scss/index";
+ .#{$vt-namespace}__icon {
+   width: 25px;
+ }
+ 
+ .#{$vt-namespace}__toast {
+   border-radius: 0;
+ }
+ 

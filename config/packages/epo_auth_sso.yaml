@@ -1,0 +1,11 @@
+epo_auth_sso:
+    # Save a minimal user in database (username and dates only)
+    save_user: true
+    # Save a full user in database (roles, e-mail, profile)
+    save_all_user_data: true
+    # Configure the URL where the user is redirected on logout
+    redirect_url: https://gassi.sso.francetelecom.fr/
+    # Not testing GASSI header "SM_AUTHTYPE" by default
+    gassi_authtype: false
+    # In case of testing "SM_AUTHTYPE" : define the expected value(s)
+    gassi_authtype_value: [ 'form', 'certificate' ]

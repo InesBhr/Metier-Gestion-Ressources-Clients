@@ -1,0 +1,59 @@
+security:
+  # Rôles de l'application et héritages entre les rôles
+  role_hierarchy:
+    ROLE_SAME: [ROLE_SUPER_ADMIN]
+    ROLE_GESTIONNAIRE: [ROLE_USER]
+    ROLE_VISITEUR: [ROLE_USER]
+
+  # Providers pour les deux classes EPO :
+  # - Model : structure de base, sans lien avec la base de données
+  # - Entity : annotée et mappée avec la base de données, étend le Model
+  providers:
+    provider_epo_model_user:
+      id: Epo\UserModelBundle\Security\Provider\UserModelProvider
+    provider_epo_entity_user:
+      id: Epo\UserEntityBundle\Security\Provider\UserEntityProvider
+
+  # Encoder pour la classe Entité : spécifie l'algorithme à utiliser pour chiffrer le mot de passe
+  encoders:
+    Epo\UserEntityBundle\Entity\User:
+      algorithm: auto
+
+  # Firewalls : critères d'authentification et de sécurité par ensemble de ressources (cf. pattern)
+  firewalls:
+    # Firewall "dev" : laisse libre accès aux ressources utiles en développement
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+
+    # Firewall "main" : protège toutes les autres ressources de l'application
+    main:
+      anonymous: true
+      provider: provider_epo_entity_user
+
+      # Cette classe UserChecker gère l'accès de l'utilisateur si :
+      # - Son compte est actif
+      # - Son compte n'est pas périmé (aucune authentification depuis N jours)
+      user_checker: Epo\UserEntityBundle\Service\UserChecker
+
+      # [AuthSsoBundle] Guard d'authentification via SSO GASSI
+      guard:
+        provider: provider_epo_entity_user
+        entry_point: Epo\AuthSsoBundle\Security\Authenticator\GassiAuthenticator
+        authenticators:
+          - Epo\AuthSsoBundle\Security\Authenticator\GassiAuthenticator
+
+      logout:
+        path: "/logout"
+        invalidate_session: true
+
+  # Règles d'accès (ACL) aux ressources de l'application
+  access_control:
+    # La page d'authentification et de déconnexion sont accessibles anonymement
+    - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/logout$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/health$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    # La page de profil est accessible anonymement
+    - { path: ^/profile, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    # Le reste de l'application nécessite d'être authentifié
+    - { path: ^/(.*)$, roles: IS_AUTHENTICATED_FULLY }

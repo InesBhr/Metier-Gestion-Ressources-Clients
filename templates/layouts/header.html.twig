@@ -1,0 +1,35 @@
+<header>
+	<nav class="navbar navbar-dark bg-dark navbar-expand-lg" aria-label="Global navigation - With one line title example">
+		<div class="container-xxl">
+			<div class="navbar-brand me-auto me-lg-4">
+				<a class="stretched-link" href="/">
+					<img src="{{ asset('images/orange-logo.svg') }}" width="50" height="50" alt="Boosted - Back to Home" loading="lazy">
+				</a>
+				<h1 class="title">{{ get_env("APP_NAME") }}</h1>
+			</div>
+			<div id="header_menu" class="me-auto"></div>
+			<div class="d-flex justify-content-end">
+				<ul class="navbar-nav d-flex d-none d-lg-flex nav-item">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							{% if app.user.profile.givenName is defined %}
+								{{ app.user.profile.givenName }}
+								{{ app.user.profile.displayName }}
+							{% else %}
+								{{ app.user.username | upper }}
+							{% endif %}
+						</a>
+						<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+							<li>
+								<a class="dropdown-item" href="{{ path('epo_theme_base_ui_profile_homepage') }}">Profil</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{{ path('epo_auth_sso_security_logout') }}">Déconnexion</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</header>

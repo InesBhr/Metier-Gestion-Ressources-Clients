@@ -1,0 +1,48 @@
+@import "~boosted/scss/_functions.scss";
+@import "~boosted/scss/_variables.scss";
+
+#bodyEditor div.tox-promotion,
+#bodyEditor span.tox-statusbar__branding {
+  display: none;
+}
+
+
+.tox-tinymce {
+    border-radius: 0 !important;
+    border: $input-border-width solid $input-border-color !important;
+    font-family: $font-family-sans-serif !important;
+}
+
+.tox .tox-statusbar {
+    border-top: 0.0625rem solid $input-border-color !important;
+}
+
+.tox .tox-tbtn:hover,.tox .tox-tbtn--enabled, .tox .tox-mbtn:hover,.tox .tox-collection--list .tox-collection__item--active, .tox .tox-mbtn--active, .tox .tox-mbtn:focus,.tox .tox-dialog__footer-end .tox-button {
+  background: $orange-400 !important;
+}
+.tox .tox-tbtn, .tox .tox-mbtn,.tox .tox-dialog, .tox .tox-collection--list .tox-collection__item, .tox .tox-collection--list, .tox .tox-textfield, .tox .tox-dialog__footer-end .tox-button{
+  border-radius: 0 !important;
+}
+
+.tox .tox-tbtn--bespoke {
+  background: $gray-200 !important;
+}
+
+.tox .tox-label{
+  margin-bottom:.5rem !important;
+  color:#000000 !important;
+  font-weight:700 !important;
+}
+
+.tox-textfield{
+ border: .125rem solid #ccc !important;
+}
+
+.tox .tox-textfield:focus{
+  box-shadow: 0 0 0 0 #ffffff !important;
+  border: .125rem solid #000000 !important;
+}
+
+.tox .tox-dialog__footer-end .tox-button{
+border-color: $orange-400 !important;
+}

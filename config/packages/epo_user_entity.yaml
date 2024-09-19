@@ -1,0 +1,5 @@
+epo_user_entity:
+  entity_class: 'App\Entity\Core\User'
+  security_enable: true
+  max_days_until_login: 180
+  max_days_after_reactivation: 2

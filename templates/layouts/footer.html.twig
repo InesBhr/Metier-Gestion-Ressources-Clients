@@ -1,0 +1,31 @@
+<footer class="footer bg-dark navbar-dark">
+	<div class="container-xxl footer-service py-3">
+		<ul class="navbar-nav gap-3 gap-md-4">
+			<li>
+				<a class="nav-link gap-1" href="mailto:dm-soutien.pode@orange.com?subject=Mail de Site Metier GRC">Nous contacter</a>
+			</li>
+			<li>
+				<a class="nav-link gap-1" href="#">Haut de page</a>
+			</li>
+		</ul>
+	</div>
+	<div class="border-bottom border-1 border-dark"></div>
+	<div class="container-xxl footer-service py-3">
+		<ul class="navbar-nav gap-3 gap-md-4">
+			<li class="my-auto">
+				<a class="nav-link gap-1" href="#">
+					<img alt="img" class="img-fluid" src="{{ asset('images/orange-logo.svg') }}" style="height: 2rem">
+				</a>
+			</li>
+			<li class="my-auto">
+				<a class="nav-link gap-1" href="#">{{ get_env("APP_NAME") }}</a>
+			</li>
+			<li class="my-auto">
+				<a class="nav-link gap-1" href="#">{{ get_env("APP_VERSION") }}</a>
+			</li>
+			<li class="my-auto">
+				<a class="nav-link gap-1" href="#">{{ get_env("APP_ENTITY") }}</a>
+			</li>
+		</ul>
+	</div>
+</footer>

@@ -1,0 +1,84 @@
+ @import "~vue-stripe-menu/src/scss/index";
+ /*************************************************************/
+ /*                      vue-stripe-menu
+ /*************************************************************/
+ .vsm-menu {
+   max-width: 1024px;
+   width: 100%;
+   margin: 0 auto;
+ }
+ 
+ .vsm-nav {
+   margin: 0 10px;
+ }
+ 
+ .vsm-link-container {
+   display: flex;
+   flex: 1 1 auto;
+   justify-content: center;
+ }
+ 
+ @media screen and (max-width: 768px) {
+   .vsm-mob-show {
+     display: block;
+   }
+   .vsm-mob-hide {
+     display: none;
+   }
+   .vsm-mob-full {
+     flex-grow: 1;
+   }
+ }
+ 
+ .vsm-link {
+   color: var(--bs-white);
+   cursor: pointer;
+ }
+ 
+ .vsm-has-dropdown:not(a) {
+   cursor: pointer;
+ }
+ 
+ .vsm-link:hover, .vsm-active, .vsm-link.vsm-active {
+   color: var(--bs-link-hover-color);
+ }
+ 
+ .vsm-dropdown-content {
+   color: var(--bs-dark);
+ }
+ 
+ .vsm-arrow {
+   background: var(--bs-dark);
+ }
+ 
+ .vsm-dropdown-content a.nav-link:hover {
+   color: var(--bs-primary);
+ }
+ 
+ .vsm-background {
+   background: var(--bs-dark);
+   border-radius: 0;
+ }
+ 
+ /*************************************************************/
+ /*                      Mobile
+ /*************************************************************/
+ 
+ .vsm-mob-line {
+   background: var(--bs-white);
+ }
+ 
+ .vsm-mob-close:before, .vsm-mob-close:after {
+   background: var(--bs-white);
+ }
+ 
+ .vsm-mob-content {
+   position: fixed;
+   left: 0;
+   top: 0;
+   right: 0;
+   justify-content: flex-end;
+   perspective: 2000px;
+   z-index: 10;
+ }
+ 

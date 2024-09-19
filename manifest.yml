@@ -1,0 +1,21 @@
+---
+applications:
+  - name: site-metier-grc
+    buildpacks:
+      - php_buildpack_v4_6_18
+    memory: 256M
+    disk_quota: 750M
+    instances: 2
+    metadata:
+      annotations:
+        "com.orange.repository.orangecarto/id": 33325
+        "com.orange.repository.orangecarto/basicat": 23F
+    env:
+      APP_ENV: prod
+      PHP_INI_SCAN_DIR: .bp-config/php/php.ini.d
+      PLATEFORM: mercury
+    services:
+      - site-metier-grc-database
+      - site-metier-grc-redis-cache
+      - site-metier-grc-redis-sessions
+      - site-metier-grc-storage

@@ -1,0 +1,22 @@
+parameters:
+  oss118:
+    host: "%env(resolve:OSS118_HOST)%"
+    bucket: "%env(OSS118_BUCKET)%"
+    access_key_id: "%env(OSS118_ACCESS_KEY_ID)%"
+    secret_access_key: "%env(OSS118_SECRET_ACCESS_KEY)%"
+
+  osi_storage:
+    host: "%env(resolve:OUTILGRC_S3_HOST)%"
+    bucket: "%env(OUTILGRC_S3_BUCKET)%"
+    access_key_id: "%env(OUTILGRC_S3_ACCESS_KEY_ID)%"
+    secret_access_key: "%env(OUTILGRC_S3_SECRET_ACCESS_KEY)%"
+
+when@prod:
+  imports:
+    - { resource: ../cloudfoundry.php }
+  parameters:
+    oss118:
+      host: "%storage_cf_host%"
+      bucket: "%storage_cf_bucket%"
+      access_key_id: "%storage_cf_access_key_id%"
+      secret_access_key: "%storage_cf_secret_access_key%"

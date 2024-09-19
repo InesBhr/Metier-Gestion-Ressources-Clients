@@ -1,0 +1,4 @@
+epo_mail:
+  mailer_user: 'no-reply@orange.com'
+  sender_name: 'no-reply'
+  base_route: 'epo_theme_base_ui_homepage'

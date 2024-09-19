@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<link rel="icon" href="{{ asset('images/orange-logo.svg') }}">
+		<title>
+			{% block title %}
+				{{ get_env('APP_NAME') }}
+			{% endblock %}
+		</title>
+
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
+	</head>
+	<body class="d-flex flex-column min-vh-100">
+		{% include 'layouts/header.html.twig' %}
+		<main class="mb-auto"> {% block body %}{% endblock %}
+			</main>
+			<div aria-live="polite" aria-atomic="true" class="position-relative">
+				<div id="toast-container" class="toast-container position-absolute bottom-0 end-0 p-3"></div>
+			</div>
+
+			{% include 'layouts/footer.html.twig' %}
+
+			{% block javascripts %}
+				{{ encore_entry_script_tags('app') }}
+				<script>
+					const userPermissions = Object.freeze({same: {{ is_granted('ROLE_SAME') ? 'true'|raw : 'false'|raw }}, gestionnaire: {{ is_granted('ROLE_GESTIONNAIRE') ? 'true'|raw : 'false'|raw }}, visiteur: {{ is_granted('ROLE_VISITEUR') ? 'true'|raw : 'false'|raw }}});
+				</script>
+			{% endblock %}
+		</body>
+	</html>

@@ -1,0 +1,9 @@
+epo_security:
+    debug:
+        feature_is_enabled: true
+        debug_tools_expire_after: 43200
+
+when@dev:
+    epo_security:
+        debug:
+            feature_is_enabled: false

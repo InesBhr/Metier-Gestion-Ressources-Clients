@@ -1,0 +1,152 @@
+home:
+  path: /
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  defaults:
+    template: "core/index.html.twig"
+
+documentation:
+  path: /documentation/{wildcard}
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  requirements:
+    wildcard: .*
+  defaults:
+    template: "documentation/documentation.html.twig"
+
+programs:
+  path: /programs
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  defaults:
+    template: "programs/programs.html.twig"
+
+files_access:
+  path: /files-access
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  defaults:
+    template: "files-access/files-access.html.twig"
+
+workflow:
+  path: /workflow/{wildcard}
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  requirements:
+    wildcard: .*
+  defaults:
+    template: "workflow/workflow.html.twig"
+
+epo_theme_base_ui_profile_homepage:
+  path: /profile
+  controller: App\Controller\Core\ProfilController::index
+
+epo_theme_base_ui_homepage:
+  path: /
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  defaults:
+    template: "core/index.html.twig"
+
+health_check:
+  path: /health
+  controller: App\Controller\Core\HealthAction
+
+api_fileupload_post:
+  path: /api/fileupload
+  controller: App\Controller\Core\FileUploadController::upload
+  methods: "POST"
+
+api_fileupload_delete:
+  path: /api/fileupload
+  controller: App\Controller\Core\FileUploadController::delete
+  methods: "DELETE"
+
+api_fileupload_deletion:
+  path: /api/fileupload/{file}
+  controller: App\Controller\Core\FileUploadController::deletion
+  methods: "DELETE"
+
+api_fileupload_update:
+  path: /api/fileupload/{file}
+  controller: App\Controller\Core\FileUploadController::update
+  methods: "PATCH"
+
+api_fileupload_get:
+  path: /api/fileupload
+  controller: App\Controller\Core\FileUploadController::getFiles
+  methods: ["GET"]
+
+api_filepond_s3_get:
+  path: /api/fileupload/{fileKey}
+  controller: App\Controller\Core\FileUploadController::display
+  methods: ["GET"]
+
+api_filepond_download:
+  path: /download/{fileKey}
+  controller: App\Controller\Core\FileUploadController::download
+  methods: ["GET"]
+
+api_programupload_post:
+  path: /api/programupload
+  controller: App\Controller\Programs\ProgramsController::upload
+  methods: "POST"
+
+api_programupload_get:
+  path: /api/programupload
+  controller: App\Controller\Programs\ProgramsController::getPrograms
+  methods: ["GET"]
+
+api_programupload_delete:
+  path: /api/programupload/{program}
+  controller: App\Controller\Programs\ProgramsController::delete
+  methods: "DELETE"
+
+api_programupload_deleteupload:
+  path: /api/programupload
+  controller: App\Controller\Programs\ProgramsController::deleteupload
+  methods: "DELETE"
+
+api_programupload_update:
+  path: /api/programupload/{file}
+  controller: App\Controller\Programs\ProgramsController::update
+  methods: "PATCH"
+
+api_programupload_download:
+  path: /downloadprogram/{programKey}
+  controller: App\Controller\Programs\ProgramsController::download
+  methods: ["GET"]
+
+api_programdocumentation_get:
+  path: /api/programdocumentation/{programId}
+  controller: App\Controller\Programs\ProgramsController::getProgramDocumentation
+  methods: ["GET"]
+
+api_programdocumentation_update:
+  path: /api/programdocumentation/{programDocId}
+  controller: App\Controller\Programs\ProgramsController::updateProgramDocumentation
+  methods: ["PATCH"]
+
+api_anomalies_get:
+  path: /api/anomalies
+  controller: App\Controller\Workflow\WorkflowController::getAnomalies
+  methods: ["GET"]
+
+api_rejects_get:
+  path: /api/rejects
+  controller: App\Controller\Workflow\WorkflowController::getRejects
+  methods: ["GET"]
+
+api_anomalies_ban_update:
+  path: /api/anomalies-ban
+  controller: App\Controller\Workflow\WorkflowController::updateStateBan
+  methods: ["PATCH"]
+
+api_anomalies_spn_update:
+  path: /api/anomalies-spn
+  controller: App\Controller\Workflow\WorkflowController::updateStateSpn
+  methods: ["PATCH"]
+
+api_rejects_42c:
+  path: /api/rejets-42c
+  controller: App\Controller\Workflow\WorkflowController::updateState42C
+  methods: ["PATCH"]
+
+api_rejects_42l:
+  path: /api/rejets-42l
+  controller: App\Controller\Workflow\WorkflowController::updateState42L
+  methods: ["PATCH"]

@@ -1,0 +1,17 @@
+### Configuration files from Symfony
+/.env.local
+/.env.local.php
+/.env.*.local
+/var/
+!/var/fixtures-files/
+/.idea
+
+### Static files log and build dir
+/node_modules
+npm-debug.log
+yarn-error.log
+
+### Things dir that will be build during deployment
+/bin/.phpunit
+/vendor
+/public/bundles

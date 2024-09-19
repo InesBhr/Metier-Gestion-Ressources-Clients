@@ -1,0 +1,224 @@
+variables:
+  IMAGE_SYMFONY_54: "bitnami/symfony:5.4"
+  IMAGE_NODE_16: "node:16"
+  IMAGE_CF: "governmentpaas/cf-cli"
+  CF_SPACE: "METIER GESTION RESSOURCE CLIENT"
+  CF_APP: "site-metier-grc"
+
+stages:
+  - build
+  - quality
+  - deploy
+  - schedule
+
+######################################################################################
+##################################       BUILD      ##################################
+######################################################################################
+composer:
+  image: ${IMAGE_SYMFONY_54}
+  stage: build
+  tags: ["graas"]
+  only: ["tags", "dev", "testing"]
+  except:
+    - schedules
+  script:
+    - composer --version
+    - echo "$COMPOSER_AUTH" > auth.json
+    - composer install --prefer-dist --no-progress --no-interaction --no-scripts --ignore-platform-reqs
+  artifacts:
+    paths:
+      - vendor
+    expire_in: 1 hrs
+
+npm:
+  image: ${IMAGE_NODE_16}
+  stage: build
+  tags: ["graas"]
+  only: ["tags", "dev", "testing"]
+  except:
+    - schedules
+  script:
+    - npm -v
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - public/build
+    expire_in: 1 hrs
+
+######################################################################################
+##################################     QUALITY      ##################################
+######################################################################################
+php-cs-fixer:
+  dependencies: ["composer"]
+  image: ${IMAGE_SYMFONY_54}
+  stage: quality
+  only: ["dev"]
+  except:
+    - schedules
+  tags: ["graas"]
+  script:
+    - vendor/bin/php-cs-fixer fix --config=.php_cs_fixer --verbose --using-cache=no src/ tests/
+  allow_failure: true
+
+sonarqube-check:
+  stage: quality
+  dependencies: ["composer", "php-cs-fixer"]
+  image:
+    name: sonarsource/sonar-scanner-cli:5.0
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
+    GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - echo "sonar.projectVersion=$(grep 'APP_VERSION=' .env |  tr -d 'APP_VERSION=')" >> sonar-project.properties
+    - sonar-scanner
+  allow_failure: true
+  only: ["dev", "merge_requests", "tags"]
+  except:
+    - schedules
+
+######################################################################################
+##############################      DEPLOY STAGING      ##############################
+######################################################################################
+ep1 staging:
+  extends: [".staging deployment"]
+  stage: deploy
+  only: ["dev"]
+  except:
+    - schedules
+  variables:
+    CF_API: "https://api.ep1.mercury.si.fr.intraorange"
+
+ep2 staging:
+  extends: [".staging deployment"]
+  stage: deploy
+  only: ["dev"]
+  except:
+    - schedules
+  variables:
+    CF_API: "https://api.ep2.mercury.si.fr.intraorange"
+
+ep3 staging:
+  extends: [".staging deployment"]
+  stage: deploy
+  only: ["dev"]
+  except:
+    - schedules
+  variables:
+    CF_API: "https://api.ep3.mercury.si.fr.intraorange"
+
+######################################################################################
+############################      DEPLOY PRODUCTION      #############################
+######################################################################################
+ep1 prod:
+  extends: [".prod deployment"]
+  stage: deploy
+  only: ["tags"]
+  except:
+    - schedules
+  variables:
+    CF_API: "https://api.ep1.mercury.si.fr.intraorange"
+
+ep2 prod:
+  extends: [".prod deployment"]
+  stage: deploy
+  only: ["tags"]
+  except:
+    - schedules
+  variables:
+    CF_API: "https://api.ep2.mercury.si.fr.intraorange"
+
+ep3 prod:
+  extends: [".prod deployment"]
+  stage: deploy
+  only: ["tags"]
+  except:
+    - schedules
+  variables:
+    CF_API: "https://api.ep3.mercury.si.fr.intraorange"
+
+######################################################################################
+##############################      PARTIAL CONFIG      ##############################
+######################################################################################
+.staging deployment:
+  extends: [".deploy"]
+  variables:
+    CF_ORG: "dm-pode-staging"
+  environment:
+    name: staging
+    url: $STAGING_URL
+
+.prod deployment:
+  extends: [".deploy"]
+  variables:
+    CF_ORG: "dm-pode-prod"
+  environment:
+    name: production
+    url: $PROD_URL
+
+.deploy:
+  dependencies: ["npm"]
+  image: ${IMAGE_CF}
+  tags: ["anode"]
+  variables:
+    APP_ENV: "prod"
+  script:
+    - echo "$ENV" >> .env
+    - echo "$COMPOSER_AUTH" > auth.json
+    - cf login --skip-ssl-validation -a "${CF_API}" -o "${CF_ORG}" -s "${CF_SPACE}" -u $CF_PODE_DEPLOY_USER -p $CF_PODE_DEPLOY_PWD
+    - cf push ${CF_APP} --strategy rolling
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console doctrine:migrations:migrate -n --allow-no-migration --all-or-nothing"
+
+######################################################################################
+##############################      POST DEPLOY TASK     ##############################
+######################################################################################
+
+schedule_ep1:
+  stage: schedule
+  rules:
+    - if: "$CF_ENDPOINT =~ /ep1/"
+    - if: "$CI_PIPELINE_SOURCE == 'schedule'"
+  image: ${IMAGE_CF}
+  tags: ["anode"]
+  before_script:
+    - cf login --skip-ssl-validation -a "https://api.ep1.mercury.si.fr.intraorange" -o "${CF_ORG}" -s "${CF_SPACE}" -u $CF_PODE_DEPLOY_USER -p $CF_PODE_DEPLOY_PWD
+  script:
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-anomalies-spn-dispo"
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-rejects-42c"
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-anomalies-ban"
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-rejects-42l"
+
+schedule_ep2:
+  stage: schedule
+  rules:
+    - if: "$CF_ENDPOINT =~ /ep2/"
+    - if: "$CI_PIPELINE_SOURCE == 'schedule'"
+  image: ${IMAGE_CF}
+  tags: ["anode"]
+  before_script:
+    - cf login --skip-ssl-validation -a "https://api.ep2.mercury.si.fr.intraorange" -o "${CF_ORG}" -s "${CF_SPACE}" -u $CF_PODE_DEPLOY_USER -p $CF_PODE_DEPLOY_PWD
+  script:
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-anomalies-spn-dispo"
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-rejects-42c"
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-anomalies-ban"
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-rejects-42l"
+
+schedule_ep3:
+  stage: schedule
+  rules:
+    - if: "$CF_ENDPOINT =~ /ep3/"
+    - if: "$CI_PIPELINE_SOURCE == 'schedule'"
+  image: ${IMAGE_CF}
+  tags: ["anode"]
+  before_script:
+    - cf login --skip-ssl-validation -a "https://api.ep3.mercury.si.fr.intraorange" -o "${CF_ORG}" -s "${CF_SPACE}" -u $CF_PODE_DEPLOY_USER -p $CF_PODE_DEPLOY_PWD
+  script:
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-anomalies-spn-dispo"
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-rejects-42c"
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-anomalies-ban"
+    - cf run-task "${CF_APP}" -m 256M -k 750M -c "php ./bin/console app:fetch-rejects-42l"

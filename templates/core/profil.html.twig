@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+	<div id="app" class="container-xxl my-3">
+		<router-view></router-view>
+	</div>
+	<div class="container">
+		<ol class="breadcrumb mt-0">
+			<li class="breadcrumb-item">
+				<a href="/">Accueil</a>
+			</li>
+			<li class="breadcrumb-item active">Mon profil</li>
+		</ol>
+	</div>
+	<div class="container">
+		<h1>Bonjour</h1>
+		<p class="lead border-bottom border-light pb-3">Vous trouverez toutes les informations relatives à votre identité sur cette page.</p>
+		<dl class="row">
+			<dt class="col-sm-12 col-md-4">Identifiant</dt>
+			<dd class="col-sm-12 col-md-8">{{ user.username }}</dd>
+			<dt class="col-sm-12 col-md-4">Adresse email</dt>
+			<dd class="col-sm-12 col-md-8">{{ user.email }}</dd>
+			<dt class="col-sm-12 col-md-4">Rôle(s)</dt>
+			<dd class="col-sm-12 col-md-8">
+				<ul class="list-unstyled">
+					{% for role in user.roles %}
+						<li>
+							{{ role }}
+						</li>
+					{% endfor %}
+				</ul>
+			</dd>
+			<dt class="col-sm-12 col-md-4">Profil</dt>
+			<dd class="col-sm-12 col-md-8">
+				<ul class="list-unstyled">
+					<li>
+						<b>Prénom</b>
+						:
+						{{ user.profile['displayName'] }}
+					</li>
+					<li>
+						<b>Numéro de téléphone</b>
+						:
+						{% if user.profile['phoneNumber'] is defined %}
+							{{ user.profile['phoneNumber'] }}
+						{% endif %}
+					</li>
+					<li>
+						<b>Nom affiché</b>
+						:
+						{% if user.profile['displayName'] is defined %}
+							{{ user.profile['displayName'] }}
+						{% endif %}
+					</li>
+					<li>
+						<b>Rôle(s) externe(s)</b>
+						:
+						{% if user.profile['roles_ext'] is defined %}
+							{% for role in user.profile['roles_ext'] %}
+								<div>{{ role }}</div>
+							{% endfor %}
+						{% endif %}
+					</li>
+				</ul>
+			</dd>
+			<dt class="col-sm-12 col-md-4">Date de connexion</dt>
+			<dd class="col-sm-12 col-md-8">{{ user.connected|date("d/m/Y h:m") }}</dd>
+			<dt class="col-sm-12 col-md-4">Date de dernière connexion</dt>
+			<dd class="col-sm-12 col-md-8">{{ user.lastConnected|date("d/m/Y h:m") }}</dd>
+			<dt class="col-sm-12 col-md-4">Date et heure de création</dt>
+			<dd class="col-sm-12 col-md-8">{{ user.created|date("d/m/Y h:m") }}</dd>
+			<dt class="col-sm-12 col-md-4">Date et heure de mise à jour</dt>
+			<dd class="col-sm-12 col-md-8">{{ user.updated|date("d/m/Y h:m") }}</dd>
+		</dl>
+	</div>
+{% endblock %}

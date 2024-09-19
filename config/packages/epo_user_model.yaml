@@ -1,0 +1,2 @@
+epo_user_model:
+  model_class: 'Epo\UserModelBundle\Model\User'
